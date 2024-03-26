@@ -54,7 +54,7 @@ const userSchema = new Schema(
 userSchema.pre("save", async function(next){
   if(!this.isMondified("password")) return next();
 
-  this.password = bcrypt.hash(this.password, 10)
+  this.password = await bcrypt.hash(this.password, 10)
   next()
 }) //next for middleware , callback is written differnt coz we want this reference
 
