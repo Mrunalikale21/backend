@@ -75,7 +75,7 @@ userSchema.methods.generateAccessToken = function(){
       expiresIn: process.env.ACCESS_TOKEN_EXPIRY
     }
   )
-}
+}  //short lived
 userSchema.methods.generatefreshToken = function(){
   return jwt.sign(
     {
@@ -87,5 +87,7 @@ userSchema.methods.generatefreshToken = function(){
     }
   )
 }
+
+//long lived
 
 export const User = mongoose.model("User", userSchema)
