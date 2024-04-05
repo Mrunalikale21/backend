@@ -4,10 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <h1>Home</h1>
+ <main>
+  <form method="post" action="/contact">
+    <h1>Contact Now</h1>
+    <input type="text" name="name" placeholder="name" />
+    <input type="email" name="email" placeholder="email" />
+    <button type="submit">Send Message</button>
+  </form>
+ </main>
 
-  <h2>Hello <%=name %></h2>  <!-- we can also use locals and then can render like local.name or locals.variable which was define-->
+  <!--<h2>Hello <%=name %></h2>  we can also use locals and then can render like local.name or locals.variable which was define-->
+  <script src="script.js"></script>
 </body>
 </html>
