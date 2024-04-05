@@ -4,6 +4,7 @@ import mongoose  from "mongoose";
 import { name } from "ejs";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
 
 
 mongoose.connect("mongodb://127.0.0.1:27017", 
@@ -47,21 +48,50 @@ const isauthenticated = async(req,res,next) => {
 
   if(token){
     const decoded =  jwt.verify(token, "sdfggghkfdndnd")
+
     req.user = await User.findById(decoded._id)
 
     next();
   }else{
-    res.render("login")
+    res.redirect("/login")
   }
 }
 
 app.get("/", isauthenticated , (req,res) => {
-  console.log(req.user);
   res.render("logout", {name: req.user.name})
+})
+
+// app.get("/login", (req,res) => {
+//   res.render("login")
+// })
+
+app.get("/login", (req,res) => {
+  res.render("login")
 })
 
 app.get("/register", (req,res) => {
   res.render("register")
+})
+
+app.post("/login", async (req,res) => {
+   const {email, password} = req.body;
+
+   let user = await User.findOne({email});
+
+   if(!user) return res.redirect("/register")
+
+   const isMatch = await bcrypt.compare(password, user.password)
+
+   if(!isMatch) return res.render("login", { email, message: "Incorrect Password"})
+
+   const token = jwt.sign({_id: user._id}, "sdfggghkfdndnd");
+  
+   res.cookie("token",  token,{
+     httpOnly:true, expires:new Date(Date.now()+60*1000)
+   })
+   
+   res.redirect("/")
+   
 })
 
 app.post("/register", async(req,res) => {
@@ -73,10 +103,12 @@ app.post("/register", async(req,res) => {
     return res.redirect("/login")
    }
 
+   const hassedPassword = await bcrypt.hash(password, 10)
+
   user = await User.create({
     name, 
     email,
-    password,
+    password: hassedPassword ,
   })
 
   
