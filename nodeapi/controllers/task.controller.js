@@ -25,3 +25,32 @@ export const newTask = async (req,res) => {
       tasks,
     })
   }
+
+  export const updateTask = async (req,res) => {
+    const task = await Task.findById( req.params.id);
+
+    task.isCompleted = !task.isCompleted;
+    await task.save();
+    res.status(200).json({
+      success: true,
+      message: "task updated",
+    })
+  }
+
+  export const deleteTask = async (req,res) => {
+    const task = await Task.findById( req.params.id);
+
+    if(!task) 
+    return res.status(404).json({
+  success: false,
+ message: "Invalid id",
+})
+  
+await task.deleteOne();
+
+    await task.remove();
+    res.status(200).json({
+      success: true,
+      message: "task deleted",
+    })
+  }
